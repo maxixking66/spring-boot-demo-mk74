@@ -4,10 +4,12 @@ import com.maktabsharif.springbootdemo.domain.User;
 import com.maktabsharif.springbootdemo.mapper.UserMapper;
 import com.maktabsharif.springbootdemo.service.UserService;
 import com.maktabsharif.springbootdemo.service.dto.UserBriefDTO;
+import com.maktabsharif.springbootdemo.service.dto.extra.UserCreateDTO;
 import com.maktabsharif.springbootdemo.service.dto.extra.UserSearch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -44,6 +46,13 @@ public class UserResource {
     @PostMapping
     public User save(@RequestBody User user) {
         return userService.save(user);
+    }
+
+    @PostMapping("/create")
+    public User save(@RequestBody @Valid UserCreateDTO userCreateDTO) {
+        return userService.save(
+                userMapper.convertUserCreateDTOToUser(userCreateDTO)
+        );
     }
 
 }
