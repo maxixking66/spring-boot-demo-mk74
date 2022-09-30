@@ -1,11 +1,11 @@
 package com.maktabsharif.springbootdemo.resource;
 
 import com.maktabsharif.springbootdemo.domain.User;
+import com.maktabsharif.springbootdemo.mapper.UserMapper;
 import com.maktabsharif.springbootdemo.service.UserService;
 import com.maktabsharif.springbootdemo.service.dto.UserBriefDTO;
 import com.maktabsharif.springbootdemo.service.dto.extra.UserSearch;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +17,8 @@ public class UserResource {
 
     private final UserService userService;
 
+    private final UserMapper userMapper;
+
     //    /user?id=5
     @GetMapping
     public User getById(@RequestParam(name = "id") Long id) {
@@ -25,11 +27,13 @@ public class UserResource {
 
     @GetMapping("/{id}")
     public UserBriefDTO getByIdByPath(@PathVariable Long id) {
-        User user = userService.findById(id).get();
+        /*User user = userService.findById(id).get();
         UserBriefDTO userBriefDTO = new UserBriefDTO();
         BeanUtils.copyProperties(user, userBriefDTO);
-        return userBriefDTO;
+        return userBriefDTO;*/
 //        return new UserBriefDTO(user.getId(), user.getFirstName(), user.getLastName());
+        User user = userService.findById(id).get();
+        return userMapper.convertUserToBriefDTO(user);
     }
 
     @PostMapping("/search")
