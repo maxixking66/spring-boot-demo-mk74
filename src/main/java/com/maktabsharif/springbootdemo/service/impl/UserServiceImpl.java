@@ -2,6 +2,7 @@ package com.maktabsharif.springbootdemo.service.impl;
 
 import com.maktabsharif.springbootdemo.base.service.impl.BaseEntityServiceImpl;
 import com.maktabsharif.springbootdemo.domain.User;
+import com.maktabsharif.springbootdemo.exception.BadRequestRuntimeException;
 import com.maktabsharif.springbootdemo.repository.UserRepository;
 import com.maktabsharif.springbootdemo.service.UserService;
 import com.maktabsharif.springbootdemo.service.dto.extra.UserSearch;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityExistsException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -55,6 +57,19 @@ public class UserServiceImpl extends BaseEntityServiceImpl<User, Long, UserRepos
         System.out.println("start");
         findAll().forEach(System.out::println);
         System.out.println("end");
+    }
+
+    @Override
+    public User login(String username, String password) {
+        User user = repository.getByUsername(username);
+        if (user == null) {
+            throw new EntityExistsException("not user found");
+        }
+//        TODO check password correctly
+        if (password.equals(user.getPassword())) {
+            return user;
+        }
+        throw new BadRequestRuntimeException("wrong pass");
     }
 
     private void setFirstNameInPredicate(List<Predicate> predicates, Root<User> root,

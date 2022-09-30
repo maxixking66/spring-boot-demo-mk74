@@ -11,8 +11,3 @@ public class SpringBootDemoApplication {
     }
 
 }
-
-//   exception handling
-//  validation
-//  documentation
-// ajax example

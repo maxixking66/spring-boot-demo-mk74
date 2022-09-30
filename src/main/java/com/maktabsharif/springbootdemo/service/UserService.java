@@ -17,4 +17,6 @@ public interface UserService extends BaseEntityService<User, Long> {
     List<User> findAllByAdvanceSearch(UserSearch userSearch);
 
     void printUser();
+
+    User login(String username, String password);
 }

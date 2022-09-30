@@ -5,7 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/")
@@ -38,10 +39,16 @@ public class PageController {
         return "home";
     }
 
-    @GetMapping("/test")
-    @ResponseBody
+    @GetMapping("/login")
     public String getTest() {
-        return "home";
+        return "login";
+    }
+
+    @GetMapping("/welcome")
+    public ModelAndView getWelcomePage(@RequestParam String username) {
+        ModelAndView modelAndView = new ModelAndView("welcome");
+        modelAndView.addObject("username", username);
+        return modelAndView;
     }
 
 }

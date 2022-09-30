@@ -4,9 +4,12 @@ import com.maktabsharif.springbootdemo.domain.User;
 import com.maktabsharif.springbootdemo.mapper.UserMapper;
 import com.maktabsharif.springbootdemo.service.UserService;
 import com.maktabsharif.springbootdemo.service.dto.UserBriefDTO;
+import com.maktabsharif.springbootdemo.service.dto.extra.LoginRequestDTO;
+import com.maktabsharif.springbootdemo.service.dto.extra.LoginResponseDTO;
 import com.maktabsharif.springbootdemo.service.dto.extra.UserCreateDTO;
 import com.maktabsharif.springbootdemo.service.dto.extra.UserSearch;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -52,6 +55,14 @@ public class UserResource {
     public User save(@RequestBody @Valid UserCreateDTO userCreateDTO) {
         return userService.save(
                 userMapper.convertUserCreateDTOToUser(userCreateDTO)
+        );
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO requestDTO) {
+        User user = userService.login(requestDTO.getUsername(), requestDTO.getPassword());
+        return ResponseEntity.ok(
+                new LoginResponseDTO(user.getUsername(), true)
         );
     }
 
