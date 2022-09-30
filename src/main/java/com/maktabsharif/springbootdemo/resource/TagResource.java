@@ -1,26 +1,19 @@
 package com.maktabsharif.springbootdemo.resource;
 
+import com.maktabsharif.springbootdemo.base.resource.BaseResource;
 import com.maktabsharif.springbootdemo.domain.Tag;
+import com.maktabsharif.springbootdemo.mapper.TagMapper;
 import com.maktabsharif.springbootdemo.service.TagService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import com.maktabsharif.springbootdemo.service.dto.TagDTO;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/tag")
-@RequiredArgsConstructor
-public class TagResource {
+public class TagResource extends BaseResource<Tag, TagDTO, Long, TagService, TagMapper> {
 
-    private final TagService tagService;
-
-    //    /tag?id=5
-    @GetMapping
-    public Tag getById(@RequestParam(name = "id") Long id) {
-        return tagService.findById(id).get();
-    }
-
-    @PostMapping
-    public Tag save(@RequestBody Tag tag) {
-        return tagService.save(tag);
+    public TagResource(TagService baseService, TagMapper baseMapper) {
+        super(baseService, baseMapper);
     }
 
 }
