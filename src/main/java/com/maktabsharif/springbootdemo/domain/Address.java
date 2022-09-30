@@ -23,4 +23,11 @@ public class Address extends BaseEntity<Long> {
 
     private String postalCode;
 
+    @Override
+    public String toString() {
+        return "Address{" +
+                "address='" + address + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                '}';
+    }
 }

@@ -39,11 +39,16 @@ public class User extends BaseEntity<Long> {
 
     private String password;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = USER_ID)
     private Set<Address> addressSet = new HashSet<>();
 
-    public String getUsername() {
-        return username;
+    @Override
+    public String toString() {
+        return "User{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", addressSet=" + addressSet +
+                '}';
     }
 }

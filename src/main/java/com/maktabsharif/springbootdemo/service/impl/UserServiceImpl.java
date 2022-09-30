@@ -50,6 +50,13 @@ public class UserServiceImpl extends BaseEntityServiceImpl<User, Long, UserRepos
         );
     }
 
+    @Override
+    public void printUser() {
+        System.out.println("start");
+        findAll().forEach(System.out::println);
+        System.out.println("end");
+    }
+
     private void setFirstNameInPredicate(List<Predicate> predicates, Root<User> root,
                                          CriteriaBuilder criteriaBuilder, String firstName) {
         if (firstName != null && !firstName.isEmpty()) {

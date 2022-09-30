@@ -15,4 +15,6 @@ public interface UserService extends BaseEntityService<User, Long> {
     Page<User> findAllByLastNameContaining(String lastName, Pageable pageable);
 
     List<User> findAllByAdvanceSearch(UserSearch userSearch);
+
+    void printUser();
 }
