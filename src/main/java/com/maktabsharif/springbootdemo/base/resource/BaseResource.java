@@ -7,9 +7,12 @@ import com.maktabsharif.springbootdemo.base.service.dto.BaseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class BaseResource<E extends BaseEntity<ID>,
@@ -23,30 +26,48 @@ public class BaseResource<E extends BaseEntity<ID>,
     protected final M baseMapper;
 
     @GetMapping
-    public D getById(@RequestParam ID id) {
-        E e = baseService.findById(id).get();
-        return baseMapper.convertEntityToDTO(e);
+    public ResponseEntity<D> getById(@RequestParam ID id) {
+        Optional<E> optional = baseService.findById(id);
+        if (optional.isPresent()) {
+            return ResponseEntity.ok(
+                    baseMapper.convertEntityToDTO(
+                            optional.get()
+                    )
+            );
+        } else {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("test", "test");
+            return ResponseEntity.notFound().headers(headers)
+                    .build();
+        }
+        /*return optional.map(e -> ResponseEntity.ok(
+                baseMapper.convertEntityToDTO(
+                        e
+                )
+        )).orElseGet(() -> ResponseEntity.notFound().build());*/
     }
 
     @PostMapping
-    public D save(@RequestBody D d) {
+    public ResponseEntity<D> save(@RequestBody D d) {
         E e = baseService.save(
                 baseMapper.convertDTOToEntity(d)
         );
-        return baseMapper.convertEntityToDTO(e);
+        return ResponseEntity.ok(baseMapper.convertEntityToDTO(e));
     }
 
     @PutMapping
-    public D update(@RequestBody D d) {
+    public ResponseEntity<D> update(@RequestBody D d) {
         E e = baseService.save(
                 baseMapper.convertDTOToEntity(d)
         );
-        return baseMapper.convertEntityToDTO(e);
+        return ResponseEntity.ok(baseMapper.convertEntityToDTO(e));
     }
 
     @GetMapping("/pageable")
-    public Page<D> getPage(Pageable pageable) {
+    public ResponseEntity<Page<D>> getPage(Pageable pageable) {
         Page<E> page = baseService.findAll(pageable);
-        return page.map(baseMapper::convertEntityToDTO);
+        return ResponseEntity.ok(
+                page.map(baseMapper::convertEntityToDTO)
+        );
     }
 }
