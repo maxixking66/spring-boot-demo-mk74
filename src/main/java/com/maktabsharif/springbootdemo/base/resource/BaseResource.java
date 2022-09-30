@@ -4,10 +4,11 @@ import com.maktabsharif.springbootdemo.base.domain.BaseEntity;
 import com.maktabsharif.springbootdemo.base.mapper.BaseMapper;
 import com.maktabsharif.springbootdemo.base.service.BaseEntityService;
 import com.maktabsharif.springbootdemo.base.service.dto.BaseDTO;
+import com.maktabsharif.springbootdemo.exception.BadRequestRuntimeException;
+import com.maktabsharif.springbootdemo.exception.EntityNotFoundRuntimeException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,14 @@ public class BaseResource<E extends BaseEntity<ID>,
     @GetMapping
     public ResponseEntity<D> getById(@RequestParam ID id) {
         Optional<E> optional = baseService.findById(id);
-        if (optional.isPresent()) {
+        return ResponseEntity.ok(
+                baseMapper.convertEntityToDTO(
+                        optional.orElseThrow(
+                                () -> new EntityNotFoundRuntimeException("not found")
+                        )
+                )
+        );
+        /*if (optional.isPresent()) {
             return ResponseEntity.ok(
                     baseMapper.convertEntityToDTO(
                             optional.get()
@@ -39,7 +47,7 @@ public class BaseResource<E extends BaseEntity<ID>,
             headers.add("test", "test");
             return ResponseEntity.notFound().headers(headers)
                     .build();
-        }
+        }*/
         /*return optional.map(e -> ResponseEntity.ok(
                 baseMapper.convertEntityToDTO(
                         e
@@ -49,6 +57,11 @@ public class BaseResource<E extends BaseEntity<ID>,
 
     @PostMapping
     public ResponseEntity<D> save(@RequestBody D d) {
+        if (d.getId() != null) {
+            throw new BadRequestRuntimeException(
+                    "id must be null"
+            );
+        }
         E e = baseService.save(
                 baseMapper.convertDTOToEntity(d)
         );
@@ -57,6 +70,11 @@ public class BaseResource<E extends BaseEntity<ID>,
 
     @PutMapping
     public ResponseEntity<D> update(@RequestBody D d) {
+        if (d.getId() == null) {
+            throw new BadRequestRuntimeException(
+                    "id must not be null"
+            );
+        }
         E e = baseService.save(
                 baseMapper.convertDTOToEntity(d)
         );
